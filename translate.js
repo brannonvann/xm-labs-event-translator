@@ -54,7 +54,8 @@ exports.google = function(payload, languages) {
 
   //extract properties from payload in source language
   var properties = payload.properties;
-
+  var myNewProperties = payload.properties;
+  
   //for each language
   for (i = 0; i < languages.length; i++) {
     var language = languages[i];
@@ -86,18 +87,32 @@ exports.google = function(payload, languages) {
     for (var _property in properties) {
       if (properties.hasOwnProperty(_property)) {
         if (googleResponse.statusCode != 200) {
-          payload.properties[_property + '-' + language] = properties[_property];
+          myNewProperties[_property + '-' + language] = properties[_property];
         } else {
-          payload.properties[_property + '-' + language] =
-            translations[translationCounter].translatedText;
+          myNewProperties[_property + '-' + language] =
+            unescapeHtml( translations[translationCounter].translatedText );
         }
         translationCounter += 1;
       }
     }
   }
+  
+  payload.properties = myNewProperties;
 
   return payload;
 };
+
+
+function unescapeHtml(safe) {
+    return safe
+         .replace(/&amp;/g, "&")
+         .replace(/&lt;/g, "<")
+         .replace(/&gt;/g, ">")
+         .replace(/&quot;/g, "\"")
+         .replace(/&#39;/g, "'");
+ }
+
+
 
 /*
  * returns event payload with new properties translated to pirate. 
