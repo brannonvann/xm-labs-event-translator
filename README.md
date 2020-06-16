@@ -7,19 +7,27 @@ Do you have an existing integration that sends events to xMatters in English and
 
 Do you have events that are sent to xMatters with obscure abbreviations or full words you want to translate to abberviations? What about other specific translations you need to make? Use the `pirate` function and dictionary as an example of creating your own library for custom "translations".
 
+<kbd>
+<a href="https://support.xmatters.com/hc/en-us/community/topics">
+   <img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+</a>
+</kbd>
+
+
+
 # Pre-Requisites
 
 - xMatters account - If you don't have one, [get one](https://www.xmatters.com)!
-- Existing xMatters Communication Plan
+- Existing xMatters Workflow
 
 # Files
 
-- [TranslatorExample.zip](TranslatorExample.zip) - This is an example comm plan to help get started. It includes the shared library, and example form with multiple languages configured, the original properties and the properties for each language to be translated.
-- [translate.js](translate.js) - This is the Shared Library contining the functions needed to translate properties in an existing comm plan or integration. Note the comments
+- [TranslatorExample.zip](TranslatorExample.zip) - This is an example Workflow to help get started. It includes the shared library, and example form with multiple languages configured, the original properties and the properties for each language to be translated.
+- [translate.js](translate.js) - This is the Shared Library contining the functions needed to translate properties in an existing Workflow or integration. Note the comments
 
 # How it works
 
-Events created in xMatters are sent to xMatters through a REST API call to the inbound integration within a communication plan. This repo contains a shared library that can be applied to any event in the system by making external calls to the Google Translate API or a custom library to append the existing properties in an event with properties in one or more languages.
+Events created in xMatters are sent to xMatters through a REST API call to the inbound integration within a Workflow. This repo contains a shared library that can be applied to any event in the system by making external calls to the Google Translate API or a custom library to append the existing properties in an event with properties in one or more languages.
 
 This works by passing the entire event payload to the `translate.google` function with the list of languages to translate to. The returned object has new properties for each language. So `status` will then have `status`, `status-fr` and `status-es`. It is important to note that these properties will need to be created, added to the form layout as well as the message templates. 
 
@@ -30,7 +38,7 @@ Installing this shared library is as easy as copy paste.
 ## xMatters set up
 
 1. Enable French and Spanish in your xMatters instance, see [here](https://help.xmatters.com/ondemand/installadmin/systemadministration/languages.htm) for details. If the **Languages** menu is not available, contact [xMatters Client Assistance](https://support.xmatters.com/hc/en-us/requests/new) for help.
-2. In xMatters, navigate to Developer --> Communcation Plans --> Select your existing plan --> Edit --> Integration Builder. Expand the Shared Libraries section (if needed) and click the **+ Add** button. 
+2. In xMatters, navigate to Workflows --> Select your existing workflow --> Edit --> Integration Builder. Expand the Shared Libraries section (if needed) and click the **+ Add** button. 
 3. Copy the contents of the [translate.js](translate.js) file and paste into the script section. Then change the name of the Shared Library to `translate` by clicking on the `My Shared Library` at the top. This is the name the code will reference when importing this library. 
 3. In your existing "Transform content to create a new xMatters event" inbound integration, add this line to the top of the script:
     ```
@@ -43,8 +51,8 @@ Installing this shared library is as easy as copy paste.
     ```
 4. Head over to the Google cloud console: [https://cloud.google.com/translate/](https://cloud.google.com/translate/) and enable the API. Then in the **API & Services** section, select **Credentials**. Click **Create Credential** and select **API Key**. Copy the API Key value and click **Restrict Key**. Give the key a name and any necessary Application Restrictions. 
 5. In the Integration Builder, click the **Endpoints** button and create a new Endpoint called `Google Translate` and and paste this value, replacing the `YOUR_KEY_HERE` with the appropriate value from above: `https://translation.googleapis.com/language/translate/v2?key=YOUR_KEY_HERE`
-6. The shared library added will add new properties to the posted event for each of the languages configured in the transform script that was modified above (i.e. `fr`, `es`). For example, if you already had a property called "status", a property will be set for the event called `status-fr` with the French translation of the status value received. This means you will need to create properties **for each language**. Create all the matching properties for all languages you intend to use in the comm plan and add them to the form layout and message template.
-7. Enable each of the matching languages in xMatters and configure Messaging templates for each language using the translated properties. Following the previous example, after French has been enabled, copy the Email Comm Plan Message template from the default language and replace the status property with the newly created status-fr property and save the message template.
+6. The shared library added will add new properties to the posted event for each of the languages configured in the transform script that was modified above (i.e. `fr`, `es`). For example, if you already had a property called "status", a property will be set for the event called `status-fr` with the French translation of the status value received. This means you will need to create properties **for each language**. Create all the matching properties for all languages you intend to use in the Workflow and add them to the form layout and message template.
+7. Enable each of the matching languages in xMatters and configure Messaging templates for each language using the translated properties. Following the previous example, after French has been enabled, copy the Email Workflow Message template from the default language and replace the status property with the newly created status-fr property and save the message template.
 
 # Testing
 
